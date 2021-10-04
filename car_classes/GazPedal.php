@@ -1,7 +1,6 @@
 <?php
 class GazPedal{
-  public $name;
-  public $status;
+    public $status;
     public function change_status($status){
         $this->status=$status;
         return $this->status;
