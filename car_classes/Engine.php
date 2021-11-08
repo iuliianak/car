@@ -1,13 +1,16 @@
 <?php
-class Engine{
-public $status;
-
-public function change_status($status){// OFF - выключен, ON - включен
-   $this->status=$status;
-   return $this->status;
-}
-    public function __construct(){
+class Engine extends Details{
+protected $power;
+protected $strana;
+    public function __construct($power,$strana){
+        $this->power=$power;
+        $this->strana=$strana;
         $this->status="OFF";
     }
-
+    public function get_power(){
+       return  $this->power;
+    }
+    public function get_strana(){
+        return  $this->strana;
+    }
 }
