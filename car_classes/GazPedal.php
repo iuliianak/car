@@ -1,11 +1,14 @@
 <?php
-class GazPedal{
-    public $status;
-    public function change_status($status){
-        $this->status=$status;
-        return $this->status;
+class GazPedal extends Details{
+    protected $speed;
+    public function get_speed(){
+        return  $this->speed;
+    }
+    public function set_speed($speed){
+        $this->speed=$speed;
     }
     public function __construct(){
-        $this->status="OFF";
-    }
+    $this->status="OFF";
+}
+
 }
