@@ -1,56 +1,84 @@
 <?php
 
 class NewCar extends Car implements MovableInterface
-{public const TYPE='Новые машины';
-    public $engine;
-    public $pedal;
-    public function __construct($name){
-        $this->engine=new Engine();
-        $this->pedal=new GazPedal();
-        $this->name=$name;
+{
+    public const TYPE = 'Новые машины';
+    protected $engine;
+    protected $pedal;
+
+
+    public function __construct($name, $power, $strana)
+    {
+        $this->engine = new Engine($power, $strana);
+        $this->pedal = new GazPedal();
+        $this->name = $name;
     }
-    public function start(){
-        return "Зажигание включено, марка машины- ".$this->name."<br>\n";
+
+    public function start()
+    {
+        return "Зажигание включено <br>\n";
     }
-    public function stop(){
-        return "Зажигание выключено, ". self::TYPE .", марка машины- ".$this->name."<br>\n";
+
+    public function stop()
+    {
+        return "Зажигание выключено <br>\n";
     }
-    public function changeStatusEngine($status){
-        if($this->engine->change_status($status)=="ON"){$message=$this->start();}
-        else{$message=$this->stop();}
-        return $message;
+
+    public function up()
+    {    $message="Нажата педаль газа. Скорость растет<br>\n";
+        for($i=1;$i<=$this->getMaxSpeed();$i++) {
+        $this->pedal->set_speed($i);
+        $message.="Скорость = ".$this->pedal->get_speed() ."км/ч <br>\n";
+            if($this->getMaxSpeed()==$this->pedal->get_speed()){
+                $message.="Превышение максимальной скорости = ".$this->getMaxSpeed()."<br>";$message.=$this->down();
+            }
     }
-    public function getStatusEngine(){
-        if($this->engine->status=='ON'){$message=$this->start();}
-        else{$message=$this->stop();}
-        return $message;
-    }
-    public function changeStatusPedal($status){
-        if($this->pedal->change_status($status)=="ON"){$message=$this->up();}
-        else{$message=$this->down();}
-        return $message;
-    }
-    public function getStatusPedal(){
-        if($this->pedal->status=='ON'){$message=$this->up();}
-        else{$message=$this->down();}
         return $message;
     }
 
-    public function checkSpeed(){
-        if($this->getMaxSpeed()<$this->speed){$message="Превышение максимальной скорости 
-        в машине типа ". self::TYPE .", марка - ".$this->name."<br>\n
-Скорость машины - ".$this->speed.". Предельно допустимая скорость - ".$this->getMaxSpeed()."<br>\n";
-            $this->pedal->status="OFF";$message.=$this->down();
+    public function down()
+    { $message="Педаль газа не нажата - скорость падает<br>\n";
+        $i=$this->getMaxSpeed();
+        while($i>1){
+        $this->pedal->set_speed($i);
+        $message.="Скорость = " .$this->pedal->get_speed() . "км/ч <br>\n";
+        $i--;
+    }
+        return $message;
+    }
+
+    public function getEngine()
+    {
+        return $this->engine;
+    }
+
+    public function getPedal()
+    {
+        return $this->pedal;
+    }
+
+    public function changeStateEngine()
+    {
+        $this->engine->changeStatus();
+        if ($this->engine->get_status() == "ON"){
+            $message = $this->start();
         }
-        else{$message="Автомобиль двигается. Скорость растет - в машине типа ". self::TYPE .", марка - ".$this->name."<br>\n 
-Скорость машины - ".$this->speed.". Предельно допустимая скорость - ".$this->getMaxSpeed();}
-
+        else {
+            $message = $this->stop();
+        }
         return $message;
     }
-    public function up(){
-        return "Нажата педаль газа";
+    public function changeStatePedal()
+    {$this->pedal->changeStatus();
+        if ($this->pedal->get_status() == "ON") {
+            $message = $this->up();
+        } else {
+            $message = $this->down();
+        }
+        return $message;
     }
-    public function down(){
-        return "Педаль газа не нажата - скорость падает<br>\n";
-    }
+
+
+
+
 }
